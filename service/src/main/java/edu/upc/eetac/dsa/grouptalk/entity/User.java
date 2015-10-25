@@ -12,7 +12,7 @@ public class User {
     @InjectLinks({})
     private List<Link> links;
     private String id;
-    private String name;
+    private String loginid;
 
     public List<Link> getLinks() {
         return links;
@@ -30,13 +30,11 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLoginid() {
+        return loginid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLoginid(String loginid) {
+        this.loginid = loginid;
     }
-
-
 }
