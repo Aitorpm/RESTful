@@ -1,8 +1,11 @@
 package edu.upc.eetac.dsa.grouptalk.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by Aitor on 24/10/15.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GrouptalkError {
     private int status;
     private String reason;
