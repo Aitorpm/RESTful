@@ -13,27 +13,37 @@ import java.sql.SQLException;
  */
 public class ThemeDAOImpl implements ThemeDAO {
     @Override
-    public Theme createTheme(String userid, String groupid, String subject, String content) throws SQLException{
+    public Theme createTheme(String userid, String groupid, String subject, String content) throws SQLException, UserDidntSubscribedException {
         Connection connection = null;
         PreparedStatement stmt = null;
         String id = null;
+
+        boolean isInGroup = checkUser(userid, groupid);
+        System.out.println(isInGroup);
+        if (isInGroup != true)
+            throw new UserDidntSubscribedException();
+
         try {
             connection = Database.getConnection();
-
+            System.out.println("antes del UUID");
             stmt = connection.prepareStatement(ThemeDAOQuery.UUID);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next())
+            System.out.println("antes del if");
+            if (rs.next()) {
+                System.out.println("NEXT");
                 id = rs.getString(1);
+            }
             else
                 throw new SQLException();
-
+            System.out.println("paso UUID");
             stmt = connection.prepareStatement(ThemeDAOQuery.CREATE_THEME);
             stmt.setString(1, id);
             stmt.setString(2, userid);
-            stmt.setString(2, groupid);
+            stmt.setString(3, groupid);
             stmt.setString(4, subject);
             stmt.setString(5, content);
-            stmt.executeUpdate();
+            stmt.executeQuery();
+            System.out.println("PASO CREATE THEME");
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -162,4 +172,39 @@ public class ThemeDAOImpl implements ThemeDAO {
             if (connection != null) connection.close();
         }
     }
+
+    @Override
+    public boolean checkUser(String id, String groupid) throws SQLException{
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        boolean a=false;
+        System.out.println(groupid);
+        System.out.println(id);
+        try {
+            connection = Database.getConnection();
+
+            stmt = connection.prepareStatement(UserDAOQuery.COMPARE_USER_GROUP);
+
+            stmt.setString(2, groupid);
+            stmt.setString(1, id);
+
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) a=true;
+
+            //String resultado = rs.getString("groupid");
+
+
+
+        }catch (SQLException e) {
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        }
+        return a;
+    }
+
 }

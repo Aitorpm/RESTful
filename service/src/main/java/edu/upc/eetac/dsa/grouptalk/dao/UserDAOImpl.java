@@ -78,6 +78,7 @@ public class UserDAOImpl implements UserDAO {
 
             // Ejecuta la consulta
             ResultSet rs = stmt.executeQuery();
+
             // Procesa los resultados
             if (rs.next()) {
                 user = new User();
@@ -147,6 +148,90 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean subscribetoGroup(String id, String groupid) throws SQLException, UserAlreadySubscribedException {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+
+        try {
+            boolean isSubcribed = checkUser(id, groupid);
+            if (isSubcribed == true)
+                throw new UserAlreadySubscribedException();
+
+            connection = Database.getConnection();
+
+            stmt = connection.prepareStatement(UserDAOQuery.SUBSCRIBE_GROUP);
+            stmt.setString(1, id);
+            stmt.setString(2, groupid);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean leaveGroup(String id, String groupid) throws SQLException, UserDidntSubscribedException{
+        Connection connection = null;
+        PreparedStatement stmt = null;
+
+        try {
+
+            boolean isSubcribed = checkUser(id, groupid);
+            if (isSubcribed != true)
+                throw new UserDidntSubscribedException();
+
+            System.out.println(isSubcribed);
+            connection = Database.getConnection();
+
+            stmt = connection.prepareStatement(UserDAOQuery.UNSUBSCRIBE_GROUP);
+            stmt.setString(1, id);
+            stmt.setString(2, groupid);
+
+            int rows = stmt.executeUpdate();
+            System.out.println(rows);
+            if (rows == 1) return true;
+            else return false;
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        }
+    }
+
+    @Override
+    public boolean checkUser(String id, String groupid) throws SQLException{
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        boolean a=false;
+        try {
+            connection = Database.getConnection();
+
+            stmt = connection.prepareStatement(UserDAOQuery.COMPARE_USER_GROUP);
+
+            stmt.setString(2,groupid);
+            stmt.setString(1, id);
+
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) { a=true;}
+        }catch (SQLException e) {
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        }
+        return a;
+    }
+
+    @Override
     public boolean checkPassword(String id, String password) throws SQLException{
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -169,26 +254,6 @@ public class UserDAOImpl implements UserDAO {
                 }
             }
             return false;
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (stmt != null) stmt.close();
-            if (connection != null) connection.close();
-        }
-    }
-
-    @Override
-    public boolean checkUser(String id, String groupid) throws SQLException{
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        try {
-            connection = Database.getConnection();
-
-            stmt = connection.prepareStatement(UserDAOQuery.COMPARE_USER_GROUP);
-            stmt.setString(1, id);
-
-            int rows = stmt.executeUpdate();
-            return (rows == 1);
         } catch (SQLException e) {
             throw e;
         } finally {

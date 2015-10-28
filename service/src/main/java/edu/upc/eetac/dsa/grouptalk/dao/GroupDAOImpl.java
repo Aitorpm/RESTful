@@ -1,6 +1,7 @@
 package edu.upc.eetac.dsa.grouptalk.dao;
 
 import edu.upc.eetac.dsa.grouptalk.entity.Group;
+import edu.upc.eetac.dsa.grouptalk.entity.GroupCollection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -121,6 +122,38 @@ public class GroupDAOImpl implements GroupDAO {
     }
 
     @Override
+    public GroupCollection getGroups() throws SQLException{
+        GroupCollection groupCollection = new GroupCollection();
+
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        try {
+            connection = Database.getConnection();
+
+
+            stmt = connection.prepareStatement(GroupDAOQuery.GET_GROUPS);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Group group = new Group();
+                group.setId(rs.getString("id"));
+                group.setName(rs.getString("name"));
+
+                groupCollection.getGroups().add(group);
+
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        }
+        return groupCollection;
+    }
+
+    @Override
     public boolean deleteGroup(String id) throws SQLException{
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -139,4 +172,5 @@ public class GroupDAOImpl implements GroupDAO {
             if (connection != null) connection.close();
         }
     }
+
 }

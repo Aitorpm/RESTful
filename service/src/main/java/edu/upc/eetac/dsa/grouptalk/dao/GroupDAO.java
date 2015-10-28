@@ -1,6 +1,7 @@
 package edu.upc.eetac.dsa.grouptalk.dao;
 
 import edu.upc.eetac.dsa.grouptalk.entity.Group;
+import edu.upc.eetac.dsa.grouptalk.entity.GroupCollection;
 
 import java.sql.SQLException;
 
@@ -15,5 +16,8 @@ public interface GroupDAO {
 
     public Group getGroupByName(String name) throws SQLException;
 
+    public GroupCollection getGroups() throws SQLException;
+
     public boolean deleteGroup(String id) throws SQLException;
+
 }

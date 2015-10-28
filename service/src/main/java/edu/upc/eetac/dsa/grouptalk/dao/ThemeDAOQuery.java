@@ -11,4 +11,5 @@ public interface ThemeDAOQuery {
     public final static String UPDATE_THEME = "update themes set subject=?, content=? where id=unhex(?) ";
     public final static String DELETE_THEME = "delete from themes where id=unhex(?)";
 
+
 }
