@@ -43,7 +43,7 @@ public class GroupResource {
 
     @Path("/{id}")
     @GET
-    @Produces(GrouptalkMediaType.GROUPTALK_USER)
+    @Produces(GrouptalkMediaType.GROUPTALK_GROUP)
     public Group getGroup(@PathParam("id") String id) {
         Group group = null;
         try {

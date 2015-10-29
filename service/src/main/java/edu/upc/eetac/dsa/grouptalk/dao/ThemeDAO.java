@@ -10,10 +10,10 @@ import java.sql.SQLException;
  */
 public interface ThemeDAO {
     public Theme createTheme(String userid, String groupid, String subject, String content) throws SQLException,UserDidntSubscribedException;
-    public Theme getThemeById(String id) throws SQLException;
-    public ThemeCollection getThemesByGroupId(String groupid) throws SQLException;
-    public Theme updateTheme(String id, String subject, String content) throws SQLException;
+    public Theme getThemeById(String id) throws SQLException, UserDidntSubscribedException;
+    public Theme getThemeByName(String name) throws SQLException, UserDidntSubscribedException;
+    public ThemeCollection getThemes() throws SQLException;
+    public ThemeCollection getThemesByGroupId(String groupid) throws SQLException, UserDidntSubscribedException;
+    public Theme updateTheme(String id,String content) throws SQLException;
     public boolean deleteTheme(String id) throws SQLException;
-    public boolean checkUser(String id, String groupid) throws SQLException;
-
-}
+    public boolean checkUser(String id, String groupid) throws SQLException;}

@@ -14,5 +14,6 @@ public interface AnswerDAO {
     public AnswerCollection getAnswersByThemeId(String themeid) throws SQLException;
     public Answer updateAnswer(String id, String content) throws SQLException;
     public boolean deleteAnswer(String id) throws SQLException;
+    public boolean checkUser(String id, String groupid) throws SQLException;
 
 }
